@@ -10,7 +10,7 @@ import {
 function App() {
   return (
     <div className="App">
-      <Navbar />
+     <Navbar />
       <Container sx={{textAlign: 'left', paddingTop: '10px'}}>
         <Homepage />
       </Container>
