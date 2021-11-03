@@ -1,7 +1,0 @@
-function getForecast() {
-
-}
-
-export {
-  getForecast
-}
