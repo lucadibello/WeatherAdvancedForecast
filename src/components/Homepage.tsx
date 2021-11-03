@@ -7,9 +7,9 @@ import {
   Button
 } from '@mui/material'
 
-import { UserLocation } from '../models/UserLocation';
-import * as LocationService from '../services/Location';
-import * as WeatherService from '../services/Weather';
+import UserLocation from '../models/UserLocation';
+import * as LocationService from '../services/LocationService';
+import * as WeatherService from '../services/WeatherService';
 
 
 export default function Homepage () {
@@ -25,7 +25,8 @@ export default function Homepage () {
     }
   }
 
-  // Try to fetch location
+  // Try to update user location
+  // TODO: save this using a caching system cache
   useEffect(() => {
     LocationService.getUserLocation((position: GeolocationPosition) => {
       setLocation({
@@ -36,8 +37,6 @@ export default function Homepage () {
       })
     })
   })
-
-  nearbyCities();
 
   return (
     <Box>
