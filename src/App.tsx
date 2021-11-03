@@ -6,10 +6,8 @@ import Navbar from './components/Navbar';
 import {
   Container
 } from '@mui/material'
-import { isLocationAvailable } from './services/Location';
 
 function App() {
-  console.log("Is location available? " + isLocationAvailable());
   return (
     <div className="App">
       <Navbar />
