@@ -1,0 +1,7 @@
+function getForecast() {
+
+}
+
+export {
+  getForecast
+}
