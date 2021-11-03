@@ -17,9 +17,13 @@ import NearbyCity from '../models/NearbyCity';
 export default function Homepage () {
   const [location, setLocation] = React.useState<UserLocation | null>(null);
   const [city, setCity] = React.useState<NearbyCity | null>(null);
+  const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
 
   const updateExactLocation = () => {
     LocationService.getUserLocation(async (position: GeolocationPosition) => {
+      // Update fetch state
+      setLocationBusy(true);
+
       // parse data
       let locationData = {
         latitude: position.coords.latitude,
@@ -48,6 +52,7 @@ export default function Homepage () {
         console.log("ERROR: NO NEARBY CITY HAS BEEN FOUND")
       }
     })
+    setLocationBusy(false);
   }
 
   // Try to update user location
@@ -81,20 +86,13 @@ export default function Homepage () {
           }}>{location === null ? "Set your location" : "Update your location"}</Button>
         </Alert>
       }
-      
-      <Typography sx={{
-        color: 'black'
-      }} variant='h6' component='h1'>
-        Ciao! API KEY: {process.env.REACT_APP_OPENWEATHER_TOKEN}
-      </Typography>
-
 
       <Typography variant='h6' component='h1'>
         Current position: {JSON.stringify(location)}
       </Typography>
       
       <Typography variant='h6' component='h1'>
-        Detected location: {JSON.stringify(city)}
+        Detected location: {city?.name}
       </Typography>
     </Box>
   );
