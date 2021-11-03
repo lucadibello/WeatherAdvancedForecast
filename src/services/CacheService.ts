@@ -28,7 +28,6 @@ const cacheData = (key: string, value: string, dataSource: Function) => {
 
 const getCachedData = (key: string): CachedData | null => {
   if (cacheExists(key)) {
-    log("Data cached")
     if (!isExpired(key)) {
       log("Cache not expired, is valid!")
       // Data exists, fetch from localStorage
