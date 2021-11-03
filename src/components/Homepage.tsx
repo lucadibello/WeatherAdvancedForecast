@@ -10,6 +10,10 @@ import {
 import UserLocation from '../models/UserLocation';
 import * as LocationService from '../services/LocationService';
 import * as WeatherService from '../services/WeatherService';
+import { LOCATION_CACHE_KEY } from '../constants/Cache';
+import * as CacheService from '../services/CacheService';
+
+
 
 
 export default function Homepage () {
@@ -28,15 +32,32 @@ export default function Homepage () {
   // Try to update user location
   // TODO: save this using a caching system cache
   useEffect(() => {
-    LocationService.getUserLocation((position: GeolocationPosition) => {
-      setLocation({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        altitude: position.coords.altitude,
-        _accuracy: position.coords.accuracy
+    // Check for cached data
+    const cachedLocationData = CacheService.getCachedData(LOCATION_CACHE_KEY);
+
+    // Check if data has been found
+    if (cachedLocationData != null) {
+      // Found cached data, no additional actions required
+      setLocation(cachedLocationData.data);
+    } else {
+      // Fetch user position
+      LocationService.getUserLocation((position: GeolocationPosition) => {
+        // Parse data into correct form
+        let locationData = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          altitude: position.coords.altitude,
+          _accuracy: position.coords.accuracy
+        }
+        
+        // save data into location state
+        setLocation(locationData);
+
+        // save data into user cache
+        CacheService.cacheData(LOCATION_CACHE_KEY, JSON.stringify(locationData), LocationService.getUserLocation)
       })
-    })
-  })
+    }
+  },[])
 
   return (
     <Box>
