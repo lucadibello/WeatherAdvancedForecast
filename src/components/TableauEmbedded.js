@@ -12,7 +12,6 @@ function TableauEmbed() {
         new tableau.Viz(containerDiv, url, options)
     }
 
-
     React.useEffect(() => {
         initViz();
     }, [])

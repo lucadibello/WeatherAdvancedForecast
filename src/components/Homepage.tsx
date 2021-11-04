@@ -26,6 +26,7 @@ import NearbyCity from '../models/NearbyCity';
 import ForecastForm from './ForecastForm';
 import { useSnackbar } from 'notistack';
 import WeatherWidget from './WeatherWidget';
+import TableauEmbed from './TableauEmbedded';
 
 export default function Homepage () {
   // Application states
@@ -163,6 +164,8 @@ export default function Homepage () {
           />
         </Container>
       }
+
+      <TableauEmbed />
     </div>
   );
 }
