@@ -21,7 +21,7 @@ import BlueWave from './BlueWave';
 import UserLocation from '../models/UserLocation';
 import * as LocationService from '../services/LocationService';
 import * as WeatherService from '../services/WeatherService';
-import { LOCATION_CACHE_KEY, CITY_CACHE_KEY } from '../constants/Cache';
+import { LOCATION_CACHE_KEY, CITY_CACHE_KEY, FORECAST_CACHE_KEY } from '../constants/Cache';
 import * as CacheService from '../services/CacheService';
 import NearbyCity from '../models/NearbyCity';
 import ForecastForm from './ForecastForm';
@@ -32,11 +32,12 @@ export default function Homepage () {
   const [location, setLocation] = React.useState<UserLocation | null>(null);
   const [city, setCity] = React.useState<NearbyCity | null>(null);
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
+  const [forecast, setForecast] = React.useState<any>(null);
+
   // Notification handler
   const { enqueueSnackbar } = useSnackbar();
 
-  const updateExactLocation = React.useCallback(() => {
-    console.log("Updaing user location")
+  const updateExactLocation = React.useCallback((errorCallback: () => void) => {
     // set busy state
     setLocationBusy(true);
 
@@ -73,15 +74,26 @@ export default function Homepage () {
       // set location busy to false
       setLocationBusy(false);
     }, () => {
-      // Notify user
-      enqueueSnackbar("An error accurred while detecting user location. Please select a city manually!", {
-        variant: 'error'
-      })
       // Error handler
+      errorCallback();
       setLocationBusy(false);
     })
   }, [enqueueSnackbar])
 
+  const updateForecast = (errorCallback: () => void) => {
+    // Check if a city name has been found
+    console.log(city?.name)
+    if (city != null && city.name.length > 0) {
+      console.log("Reading forecast...");
+      WeatherService.getForecastByCityName(city)
+        .then(result => {
+          console.log("Forecast data: ", result)
+        })
+    } else {
+      errorCallback();
+    }
+  }
+  
   // Try to update user location / get data from cache
   React.useEffect(() => {
     // Check for cached data
@@ -95,9 +107,26 @@ export default function Homepage () {
       setCity(cachedCityData.data);
     } else {
       // Fetch user position and city
-      updateExactLocation();
+      updateExactLocation(() => {
+        // Notify user
+        enqueueSnackbar("An error accurred while detecting user location. Have you allowed the location permission?", {
+          variant: 'info'
+        })
+      });
     }
-  }, [updateExactLocation])
+
+    // Check for cached data
+    const cachedForecastData = CacheService.getCachedData(FORECAST_CACHE_KEY);
+    if (cachedForecastData != null) {
+      // Found cached data, save data into state
+      setForecast(cachedForecastData.data);
+    } else {
+      console.log("Updating forecast data...");
+      // Fetch forecast from OpenWeatherMap API
+      updateForecast(() => {}); // ignore error message
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div>
@@ -106,7 +135,11 @@ export default function Homepage () {
           <Box sx={{pt: "10vh"}} />
           <Paper>
             <ForecastForm city={city} onSearch={() => {
-              console.log("Clicked search icon!!")
+              updateForecast(() => {
+                enqueueSnackbar("Error while reading weekly forecast...", {
+                  variant: 'error'
+                })
+              });
             }}/>
           </Paper>
           <Box sx={{pt: "10vh"}} />
@@ -117,7 +150,12 @@ export default function Homepage () {
               Update your location to get the information you need faster :)
               <LoadingButton
                 color={location==null ? "error" : "info"}
-                onClick={updateExactLocation}
+                onClick={() => updateExactLocation(() => {
+                    // Notify user
+                    enqueueSnackbar("An error accurred while detecting user location. Please select a city manually!", {
+                      variant: 'error'
+                    })
+                })}
                 loading={isLocationBusy}
                 loadingPosition="start"
                 startIcon={<SaveIcon />}
@@ -140,7 +178,7 @@ export default function Homepage () {
       { /* Visualize forecast data here */}
       <Container sx={{border: "1px solid black"}}>
           <Typography variant="h6" component="h1">
-            HERE WILL BE DISPLAYED THE FORECAST DATA
+            {JSON.stringify(forecast)}
           </Typography>
       </Container>
     </div>
