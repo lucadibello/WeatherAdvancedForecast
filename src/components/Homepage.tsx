@@ -21,18 +21,18 @@ import BlueWave from './BlueWave';
 import UserLocation from '../models/UserLocation';
 import * as LocationService from '../services/LocationService';
 import * as WeatherService from '../services/WeatherService';
-import { LOCATION_CACHE_KEY, CITY_CACHE_KEY, FORECAST_CACHE_KEY } from '../constants/Cache';
+import { LOCATION_CACHE_KEY, CITY_CACHE_KEY } from '../constants/Cache';
 import * as CacheService from '../services/CacheService';
 import NearbyCity from '../models/NearbyCity';
 import ForecastForm from './ForecastForm';
 import { useSnackbar } from 'notistack';
+import WeatherWidget from './WeatherWidget';
 
 export default function Homepage () {
   // Application states
   const [location, setLocation] = React.useState<UserLocation | null>(null);
   const [city, setCity] = React.useState<NearbyCity | null>(null);
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
-  const [forecast, setForecast] = React.useState<any>(null);
 
   // Notification handler
   const { enqueueSnackbar } = useSnackbar();
@@ -79,20 +79,6 @@ export default function Homepage () {
       setLocationBusy(false);
     })
   }, [enqueueSnackbar])
-
-  const updateForecast = (errorCallback: () => void) => {
-    // Check if a city name has been found
-    console.log(city?.name)
-    if (city != null && city.name.length > 0) {
-      console.log("Reading forecast...");
-      WeatherService.getForecastByCityName(city)
-        .then(result => {
-          console.log("Forecast data: ", result)
-        })
-    } else {
-      errorCallback();
-    }
-  }
   
   // Try to update user location / get data from cache
   React.useEffect(() => {
@@ -114,18 +100,7 @@ export default function Homepage () {
         })
       });
     }
-
-    // Check for cached data
-    const cachedForecastData = CacheService.getCachedData(FORECAST_CACHE_KEY);
-    if (cachedForecastData != null) {
-      // Found cached data, save data into state
-      setForecast(cachedForecastData.data);
-    } else {
-      console.log("Updating forecast data...");
-      // Fetch forecast from OpenWeatherMap API
-      updateForecast(() => {}); // ignore error message
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -134,13 +109,7 @@ export default function Homepage () {
         <Container>
           <Box sx={{pt: "10vh"}} />
           <Paper>
-            <ForecastForm city={city} onSearch={() => {
-              updateForecast(() => {
-                enqueueSnackbar("Error while reading weekly forecast...", {
-                  variant: 'error'
-                })
-              });
-            }}/>
+            <ForecastForm city={city} onSearch={() => console.log("Clicked search button!")}/>
           </Paper>
           <Box sx={{pt: "10vh"}} />
 
@@ -176,11 +145,15 @@ export default function Homepage () {
       </Box>
 
       { /* Visualize forecast data here */}
-      <Container sx={{border: "1px solid black"}}>
-          <Typography variant="h6" component="h1">
-            {JSON.stringify(forecast)}
-          </Typography>
-      </Container>
+      { location != null &&
+        <Container sx={{mb:"10vh"}}>
+            <WeatherWidget
+              lat={location.latitude}
+              lon={location.longitude} 
+              cityName={city?.name || ""}
+            />
+        </Container>
+      }
     </div>
   );
 }
