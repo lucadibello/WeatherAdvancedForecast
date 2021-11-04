@@ -2,6 +2,8 @@ import React from 'react';
 import './App.css';
 import Homepage from './components/Homepage';
 import Navbar from './components/Navbar';
+import CustomDrawer from './components/CustomDrawer';
+
 import { SnackbarProvider } from 'notistack';
 import {
   Alert,
@@ -9,11 +11,19 @@ import {
   Container,
 } from '@mui/material'
 
+import {
+  Cloud as CloudIcon,
+  Timeline as TimelineIcon
+} from '@mui/icons-material'
+
 function App() {
+  const [isDrawerOpen, setDrawerOpen] = React.useState<boolean>(false);
+  
   // check if API token is present in environment variables
   let tokenExists = Boolean(process.env.REACT_APP_OPENWEATHER_TOKEN)
 
   if (tokenExists) {
+
     return (
       <SnackbarProvider maxSnack={3}
         anchorOrigin={{
@@ -22,7 +32,24 @@ function App() {
         }}
       >
         <div className="App">
-          <Navbar />
+          {/* Drawer */}
+          <CustomDrawer
+            open={isDrawerOpen}
+            items={[
+              {
+                text: "Forecast",
+                icon: CloudIcon,
+              },
+              {
+                text: "Analytics",
+                icon: TimelineIcon,
+              },
+            ]}
+            onClose={() => setDrawerOpen(false)}
+            onOpen={() => console.log("Open")}
+          />
+          {/* Navbar */}
+          <Navbar onClick={() => setDrawerOpen(true)} />
           <div>
             <Homepage />
           </div>
@@ -32,7 +59,7 @@ function App() {
   } else {
     return (
       <div className="App">
-        <Navbar />
+        <Navbar onClick={() => {}}/>
         <Container sx={{textAlign: 'left', paddingTop: '10px'}}>
           <Alert severity="error">
             <AlertTitle>Error - Missing API token</AlertTitle>
