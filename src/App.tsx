@@ -3,8 +3,8 @@ import './App.css';
 import Homepage from './components/Homepage';
 import Navbar from './components/Navbar';
 import CustomDrawer from './components/CustomDrawer';
-
 import { SnackbarProvider } from 'notistack';
+
 import {
   Alert,
   AlertTitle,
