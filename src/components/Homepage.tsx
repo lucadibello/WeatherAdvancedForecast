@@ -25,11 +25,15 @@ import { LOCATION_CACHE_KEY, CITY_CACHE_KEY } from '../constants/Cache';
 import * as CacheService from '../services/CacheService';
 import NearbyCity from '../models/NearbyCity';
 import ForecastForm from './ForecastForm';
+import { useSnackbar } from 'notistack';
 
 export default function Homepage () {
+  // Application states
   const [location, setLocation] = React.useState<UserLocation | null>(null);
   const [city, setCity] = React.useState<NearbyCity | null>(null);
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
+  // Notification handler
+  const { enqueueSnackbar } = useSnackbar();
 
   const updateExactLocation = () => {
     // set busy state
@@ -55,27 +59,30 @@ export default function Homepage () {
       let data = await WeatherService.getNearbyCities(position.coords.latitude, position.coords.longitude, 1);
 
       // check if data has been found
-      if (data.length > 0) {
+      if (data.length > 1) {
         // Set city in react state
         setCity(data[0]);
         // Set city in cache
         CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), WeatherService.getNearbyCities)
       } else {
         // FIXME: add popup message / toast to notiy the user
-        console.log("ERROR: NO NEARBY CITY HAS BEEN FOUND")
+        enqueueSnackbar("No nearby cities has been found, please select a city manually!", {
+          variant: 'error'
+        })
       }
       // set location busy to false
       setLocationBusy(false);
     }, () => {
       // Notify user
-      console.log("AN ERROR HAS OCCURRED!!")
+      enqueueSnackbar("An error accurred while detecting user location. Please select a city manually!", {
+        variant: 'error'
+      })
       // Error handler
       setLocationBusy(false);
     })
   }
 
-  // Try to update user location
-  // TODO: save this using a caching system cache
+  // Try to update user location / get data from cache
   React.useEffect(() => {
     // Check for cached data
     const cachedLocationData = CacheService.getCachedData(LOCATION_CACHE_KEY);
@@ -90,7 +97,7 @@ export default function Homepage () {
       // Fetch user position and city
       updateExactLocation();
     }
-  },[])
+  }, [])
 
   return (
     <div>
