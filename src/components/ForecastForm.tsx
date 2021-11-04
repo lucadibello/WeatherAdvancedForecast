@@ -8,10 +8,16 @@ import {
 
 interface IForecastFormProps {
   city: NearbyCity | null
-  onSearch?(): void
+  onSearch(city: string): void
 }
 
 export default function ForecastForm(props: IForecastFormProps) {
+  const [location, setLocation] = React.useState<string>("");
+
+  React.useEffect(() => {
+    setLocation(props.city != null ? props.city.name : "")
+  },[props.city])
+
   return (
     <Box sx={{
       display: "flex",
@@ -21,13 +27,16 @@ export default function ForecastForm(props: IForecastFormProps) {
       <TextField
         label="City"
         variant="standard"
-        value={props.city?.name || ""}
+        value={location}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setLocation(event.target.value);
+        }}
         sx={{
           mt: "30px",
           mb: "30px"
         }}
       />
-      <IconButton onClick={props.onSearch}>
+      <IconButton onClick={() => props.onSearch(location)}>
         <SearchIcon fontSize="inherit" />
       </IconButton>
     </Box>
