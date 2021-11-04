@@ -2,11 +2,11 @@ import React from 'react';
 import './App.css';
 import Homepage from './components/Homepage';
 import Navbar from './components/Navbar';
-
+import { SnackbarProvider } from 'notistack';
 import {
   Alert,
   AlertTitle,
-  Container
+  Container,
 } from '@mui/material'
 
 function App() {
@@ -15,12 +15,19 @@ function App() {
 
   if (tokenExists) {
     return (
-      <div className="App">
-        <Navbar />
-        <div>
-          <Homepage />
+      <SnackbarProvider maxSnack={3}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <div className="App">
+          <Navbar />
+          <div>
+            <Homepage />
+          </div>
         </div>
-      </div>
+      </SnackbarProvider>
     );
   } else {
     return (
