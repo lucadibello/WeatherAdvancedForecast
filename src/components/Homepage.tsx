@@ -4,7 +4,6 @@ import {
   Alert,
   Box,
   Container,
-  Typography,
   Paper
 } from '@mui/material'
 
@@ -66,7 +65,6 @@ export default function Homepage () {
         // Set city in cache
         CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), WeatherService.getNearbyCities)
       } else {
-        // FIXME: add popup message / toast to notiy the user
         enqueueSnackbar("No nearby cities has been found, please select a city manually!", {
           variant: 'error'
         })
@@ -109,7 +107,18 @@ export default function Homepage () {
         <Container>
           <Box sx={{pt: "10vh"}} />
           <Paper>
-            <ForecastForm city={city} onSearch={() => console.log("Clicked search button!")}/>
+            <ForecastForm city={city} onSearch={async (cityName) => {
+              // Get coordinates using API
+
+              // FIXME: get exact country
+              let data = await WeatherService.getCoordinates(cityName);
+              if (data.length > 0) {
+                // Set city
+                setCity(data[0]);
+                // Update cache
+                CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), () => {});
+              }
+            }}/>
           </Paper>
           <Box sx={{pt: "10vh"}} />
 
@@ -145,15 +154,16 @@ export default function Homepage () {
       </Box>
 
       { /* Visualize forecast data here */}
-      { location != null &&
+      { city != null &&
         <Container sx={{mb:"10vh"}}>
-            <WeatherWidget
-              lat={location.latitude}
-              lon={location.longitude} 
-              cityName={city?.name || ""}
-            />
+          <WeatherWidget
+            lat={city.lat}
+            lon={city.lon} 
+            cityName={city.name}
+          />
         </Container>
       }
     </div>
   );
 }
+
