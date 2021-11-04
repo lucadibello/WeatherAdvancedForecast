@@ -33,6 +33,7 @@ export default function Homepage () {
   const [location, setLocation] = React.useState<UserLocation | null>(null);
   const [city, setCity] = React.useState<NearbyCity | null>(null);
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
+  const [localWeather, setLocalWeather] = React.useState<any>("Clouds");
 
   // Notification handler
   const { enqueueSnackbar } = useSnackbar();
@@ -63,6 +64,10 @@ export default function Homepage () {
       if (data.length > 0) {
         // Set city in react state
         setCity(data[0]);
+        let weatherData = await WeatherService.getForecastByCityName(data[0])
+        if (weatherData != null) {
+          setLocalWeather(weatherData)
+        }
         // Set city in cache
         CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), WeatherService.getNearbyCities)
       } else {
@@ -70,6 +75,7 @@ export default function Homepage () {
           variant: 'error'
         })
       }
+      
       // set location busy to false
       setLocationBusy(false);
     }, () => {
@@ -167,4 +173,3 @@ export default function Homepage () {
     </div>
   );
 }
-
