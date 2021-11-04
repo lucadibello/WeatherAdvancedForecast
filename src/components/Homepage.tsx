@@ -1,11 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import {
   Alert,
   Box,
+  Container,
   Typography,
-  Button
+  Paper
 } from '@mui/material'
+
+import {
+  LoadingButton
+} from '@mui/lab'
+
+import {
+  Save as SaveIcon
+} from '@mui/icons-material'
+
+import BlueWave from './BlueWave';
 
 import UserLocation from '../models/UserLocation';
 import * as LocationService from '../services/LocationService';
@@ -13,6 +24,7 @@ import * as WeatherService from '../services/WeatherService';
 import { LOCATION_CACHE_KEY, CITY_CACHE_KEY } from '../constants/Cache';
 import * as CacheService from '../services/CacheService';
 import NearbyCity from '../models/NearbyCity';
+import ForecastForm from './ForecastForm';
 
 export default function Homepage () {
   const [location, setLocation] = React.useState<UserLocation | null>(null);
@@ -20,10 +32,11 @@ export default function Homepage () {
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
 
   const updateExactLocation = () => {
-    LocationService.getUserLocation(async (position: GeolocationPosition) => {
-      // Update fetch state
-      setLocationBusy(true);
+    // set busy state
+    setLocationBusy(true);
 
+    // Fetch location
+    LocationService.getUserLocation(async (position: GeolocationPosition) => {
       // parse data
       let locationData = {
         latitude: position.coords.latitude,
@@ -51,13 +64,19 @@ export default function Homepage () {
         // FIXME: add popup message / toast to notiy the user
         console.log("ERROR: NO NEARBY CITY HAS BEEN FOUND")
       }
+      // set location busy to false
+      setLocationBusy(false);
+    }, () => {
+      // Notify user
+      console.log("AN ERROR HAS OCCURRED!!")
+      // Error handler
+      setLocationBusy(false);
     })
-    setLocationBusy(false);
   }
 
   // Try to update user location
   // TODO: save this using a caching system cache
-  useEffect(() => {
+  React.useEffect(() => {
     // Check for cached data
     const cachedLocationData = CacheService.getCachedData(LOCATION_CACHE_KEY);
     const cachedCityData = CacheService.getCachedData(CITY_CACHE_KEY);
@@ -74,26 +93,49 @@ export default function Homepage () {
   },[])
 
   return (
-    <Box>
-      {/* Ask user to enable location */}
-      {LocationService.isLocationAvailable() && 
-        <Alert color={location==null ? "error" : "warning"}>
-          Update your location to get the information you need in less time :)
-          <Button variant="outlined" color={location==null ? "error" : "warning"}  onClick={() => {
-            updateExactLocation();
-          }} sx={{
-            marginLeft: "10px"
-          }}>{location === null ? "Set your location" : "Update your location"}</Button>
-        </Alert>
-      }
+    <div>
+      <Box sx={{backgroundColor: "#1975D1"}}>
+        <Container>
+          <Box sx={{pt: "10vh"}} />
+          <Paper>
+            <ForecastForm city={city} onSearch={() => {
+              console.log("Clicked search icon!!")
+            }}/>
+          </Paper>
+          <Box sx={{pt: "10vh"}} />
 
-      <Typography variant='h6' component='h1'>
-        Current position: {JSON.stringify(location)}
-      </Typography>
-      
-      <Typography variant='h6' component='h1'>
-        Detected location: {city?.name}
-      </Typography>
-    </Box>
+          {/* Ask user to enable location */}
+          {LocationService.isLocationAvailable() &&
+            <Alert color={location==null ? "error" : "info"}>
+              Update your location to get the information you need faster :)
+              <LoadingButton
+                color={location==null ? "error" : "info"}
+                onClick={updateExactLocation}
+                loading={isLocationBusy}
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                variant="outlined"
+                sx={{
+                  marginLeft: "10px"
+                }}
+              >
+                {location === null ? "Set your location" : "Update your location"}
+              </LoadingButton>
+            </Alert>
+          }
+        </Container>
+      </Box>
+
+      <Box>
+        <BlueWave />
+      </Box>
+
+      { /* Visualize forecast data here */}
+      <Container sx={{border: "1px solid black"}}>
+          <Typography variant="h6" component="h1">
+            HERE WILL BE DISPLAYED THE FORECAST DATA
+          </Typography>
+      </Container>
+    </div>
   );
 }
