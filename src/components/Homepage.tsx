@@ -35,7 +35,8 @@ export default function Homepage () {
   // Notification handler
   const { enqueueSnackbar } = useSnackbar();
 
-  const updateExactLocation = () => {
+  const updateExactLocation = React.useCallback(() => {
+    console.log("Updaing user location")
     // set busy state
     setLocationBusy(true);
 
@@ -57,9 +58,8 @@ export default function Homepage () {
       
       // get nearby cities
       let data = await WeatherService.getNearbyCities(position.coords.latitude, position.coords.longitude, 1);
-
       // check if data has been found
-      if (data.length > 1) {
+      if (data.length > 0) {
         // Set city in react state
         setCity(data[0]);
         // Set city in cache
@@ -80,7 +80,7 @@ export default function Homepage () {
       // Error handler
       setLocationBusy(false);
     })
-  }
+  }, [enqueueSnackbar])
 
   // Try to update user location / get data from cache
   React.useEffect(() => {
@@ -97,7 +97,7 @@ export default function Homepage () {
       // Fetch user position and city
       updateExactLocation();
     }
-  }, [])
+  }, [updateExactLocation])
 
   return (
     <div>
