@@ -164,8 +164,6 @@ export default function Homepage () {
           />
         </Container>
       }
-
-      <TableauEmbed />
     </div>
   );
 }

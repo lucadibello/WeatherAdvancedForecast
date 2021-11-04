@@ -4,6 +4,7 @@ import Homepage from './components/Homepage';
 import Navbar from './components/Navbar';
 import CustomDrawer from './components/CustomDrawer';
 import { SnackbarProvider } from 'notistack';
+import { Outlet, Link } from "react-router-dom";
 
 import {
   Alert,
@@ -33,33 +34,16 @@ function App() {
       >
         <div className="App">
           {/* Drawer */}
-          <CustomDrawer
-            open={isDrawerOpen}
-            items={[
-              {
-                text: "Forecast",
-                icon: CloudIcon,
-              },
-              {
-                text: "Analytics",
-                icon: TimelineIcon,
-              },
-            ]}
-            onClose={() => setDrawerOpen(false)}
-            onOpen={() => console.log("Open")}
-          />
-          {/* Navbar */}
-          <Navbar onClick={() => setDrawerOpen(true)} />
           <div>
-            <Homepage />
+              <Homepage />
           </div>
         </div>
+        <Outlet />
       </SnackbarProvider>
     );
   } else {
     return (
       <div className="App">
-        <Navbar onClick={() => {}}/>
         <Container sx={{textAlign: 'left', paddingTop: '10px'}}>
           <Alert severity="error">
             <AlertTitle>Error - Missing API token</AlertTitle>

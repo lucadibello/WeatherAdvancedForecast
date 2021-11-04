@@ -6,6 +6,9 @@
       "dom.iterable",
       "esnext"
     ],
+     "noImplicitAny": true,
+     "noImplicitThis": true,
+     "strictNullChecks": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,6 +23,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "typeRoots": ["./node_modules/@tableau", "./node_modules/@types"]
+    
   },
   "include": [
     "src", "index.d.ts"

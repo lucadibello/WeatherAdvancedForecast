@@ -1,3 +1,4 @@
+import { width } from '@mui/system';
 import React from 'react'
 const { tableau } = window;
 
@@ -5,9 +6,11 @@ function TableauEmbed() {
 
     const initViz = () => {
         const containerDiv = document.getElementById("vizContainer");
-        const url = "http://public.tableau.com/views/RegionalSampleWorkbook/Storms"
+        const url = "https://public.tableau.com/views/WorldVisualizations/Worlddashboard"
         const options = {
-            hideTabs: true
+            hideTabs: true,
+            width: 1200,
+            height: 1000
         };
         new tableau.Viz(containerDiv, url, options)
     }
