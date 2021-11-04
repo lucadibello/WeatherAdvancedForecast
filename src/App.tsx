@@ -17,9 +17,9 @@ function App() {
     return (
       <div className="App">
         <Navbar />
-        <Container sx={{textAlign: 'left', paddingTop: '10px'}}>
+        <div>
           <Homepage />
-        </Container>
+        </div>
       </div>
     );
   } else {
