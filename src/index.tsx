@@ -11,40 +11,29 @@ import {
 } from "react-router-dom";
 import Analytics from './components/Analytics';
 import CustomDrawer from './components/CustomDrawer';
-import { SnackbarProvider } from 'notistack';
-import Navbar from './components/Navbar';
 import {
   Cloud as CloudIcon,
   Timeline as TimelineIcon
 } from '@mui/icons-material'
 
-
-
 ReactDOM.render(
   <React.StrictMode>
   <BrowserRouter>
-    <SnackbarProvider maxSnack={3}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-      >
-          {/* Drawer */}
-          <CustomDrawer
-            items={[
-              {
-                text: "Forecast",
-                link: "/",
-                icon: CloudIcon,
-              },
-              {
-                text: "Analytics",
-                link: "/analytics",
-                icon: TimelineIcon,
-              },
-            ]}
-          />
-          </SnackbarProvider>
+    {/* Drawer */}
+    <CustomDrawer
+      items={[
+        {
+          text: "Forecast",
+          link: "/",
+          icon: CloudIcon,
+        },
+        {
+          text: "Analytics",
+          link: "/analytics",
+          icon: TimelineIcon,
+        },
+      ]}
+    />
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="/analytics" element={<Analytics />} /> 

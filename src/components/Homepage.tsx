@@ -26,7 +26,6 @@ import NearbyCity from '../models/NearbyCity';
 import ForecastForm from './ForecastForm';
 import { useSnackbar } from 'notistack';
 import WeatherWidget from './WeatherWidget';
-import TableauEmbed from './TableauEmbedded';
 
 export default function Homepage () {
   // Application states
@@ -34,7 +33,6 @@ export default function Homepage () {
   const [city, setCity] = React.useState<NearbyCity | null>(null);
   const [actualLocation, setActualLocation] = React.useState<NearbyCity | null>(null);
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
-  const [localWeather, setLocalWeather] = React.useState<any>("Clouds");
 
   // Notification handler
   const { enqueueSnackbar } = useSnackbar();
@@ -66,12 +64,12 @@ export default function Homepage () {
         // Set city in react state
         setCity(data[0]);
         setActualLocation(city);
-        let weatherData = await WeatherService.getForecastByCityName(data[0])
+        /*let weatherData = await WeatherService.getForecastByCityName(data[0])
         if (weatherData != null) {
           setLocalWeather(weatherData)
         }
         // Set city in cache
-        CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), WeatherService.getNearbyCities)
+        */CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), WeatherService.getNearbyCities)
       } else {
         enqueueSnackbar("No nearby cities has been found, please select a city manually!", {
           variant: 'error'

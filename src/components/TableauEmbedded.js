@@ -1,4 +1,3 @@
-import { width } from '@mui/system';
 import React from 'react'
 const { tableau } = window;
 
