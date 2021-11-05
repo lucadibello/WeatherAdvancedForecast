@@ -10,7 +10,7 @@ function TableauEmbed() {
         const url = "https://public.tableau.com/views/WorldVisualizations/Worlddashboard"
         const options = {
             hideTabs: true,
-            width: 1200,
+            width: 1400,
             height: 1000
         };
         new tableau.Viz(containerDiv, url, options)

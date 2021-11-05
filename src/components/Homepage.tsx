@@ -31,6 +31,7 @@ export default function Homepage () {
   // Application states
   const [location, setLocation] = React.useState<UserLocation | null>(null);
   const [city, setCity] = React.useState<NearbyCity | null>(null);
+  const [actualLocation, setActualLocation] = React.useState<NearbyCity | null>(null);
   const [isLocationBusy, setLocationBusy] = React.useState<boolean>(false);
 
   // Notification handler
@@ -62,6 +63,13 @@ export default function Homepage () {
       if (data.length > 0) {
         // Set city in react state
         setCity(data[0]);
+        setActualLocation(city);
+        /*let weatherData = await WeatherService.getForecastByCityName(data[0])
+        if (weatherData != null) {
+          setLocalWeather(weatherData)
+        }
+        // Set city in cache
+        */CacheService.cacheData(CITY_CACHE_KEY, JSON.stringify(data[0]), WeatherService.getNearbyCities)
       } else {
         enqueueSnackbar("No nearby cities has been found, please select a city manually!", {
           variant: 'error'
@@ -87,7 +95,9 @@ export default function Homepage () {
     if (cachedLocationData != null && cachedCityData != null) {
       // Found cached data, no additional actions required
       setLocation(cachedLocationData.data);
+      setActualLocation(cachedCityData.data);
       setCity(cachedCityData.data);
+      
     } else {
       // Fetch user position and city
       updateExactLocation(() => {
@@ -106,7 +116,14 @@ export default function Homepage () {
         <Container>
           <Box sx={{pt: "10vh"}} />
           <Paper>
-            <ForecastForm city={city} onSearch={async (cityName) => {
+            <ForecastForm city={city} actualLocation={actualLocation} loading={isLocationBusy}
+              onFetch={() => updateExactLocation(() => {
+                    // Notify user
+                    enqueueSnackbar("An error accurred while detecting user location. Please select a city manually!", {
+                      variant: 'error'
+                    })
+                })} 
+              onSearch={async (cityName) => {
               // Get coordinates using API
 
               // FIXME: get exact country
@@ -122,7 +139,7 @@ export default function Homepage () {
           <Box sx={{pt: "10vh"}} />
 
           {/* Ask user to enable location */}
-          {LocationService.isLocationAvailable() &&
+          {!LocationService.isLocationAvailable() &&
             <Alert color={location==null ? "error" : "info"}>
               Update your location to get the information you need faster :)
               <LoadingButton
