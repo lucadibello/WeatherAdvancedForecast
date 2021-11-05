@@ -44,8 +44,6 @@ ReactDOM.render(
               },
             ]}
           />
-          {/* Navbar */}
-          {/*Navbar onClick={() => setDrawerOpen(true)} />*/}
           </SnackbarProvider>
     <Routes>
       <Route path="/" element={<App />} />

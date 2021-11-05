@@ -18,8 +18,6 @@ import {
 } from '@mui/icons-material'
 
 function App() {
-  const [isDrawerOpen, setDrawerOpen] = React.useState<boolean>(false);
-  
   // check if API token is present in environment variables
   let tokenExists = Boolean(process.env.REACT_APP_OPENWEATHER_TOKEN)
 
@@ -33,7 +31,6 @@ function App() {
         }}
       >
         <div className="App">
-          {/* Drawer */}
           <div>
               <Homepage />
           </div>
