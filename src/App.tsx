@@ -1,10 +1,8 @@
 import React from 'react';
 import './App.css';
 import Homepage from './components/Homepage';
-import Navbar from './components/Navbar';
-import CustomDrawer from './components/CustomDrawer';
 import { SnackbarProvider } from 'notistack';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import {
   Alert,
@@ -12,14 +10,7 @@ import {
   Container,
 } from '@mui/material'
 
-import {
-  Cloud as CloudIcon,
-  Timeline as TimelineIcon
-} from '@mui/icons-material'
-
 function App() {
-  const [isDrawerOpen, setDrawerOpen] = React.useState<boolean>(false);
-  
   // check if API token is present in environment variables
   let tokenExists = Boolean(process.env.REACT_APP_OPENWEATHER_TOKEN)
 
