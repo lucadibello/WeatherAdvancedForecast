@@ -1,8 +1,8 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Tab } from "@mui/material";
-import { Box } from "@mui/system";
 import React from "react";
 import TableauEmbed from "./TableauEmbedded";
+import { Box } from "@mui/system";
 
 export default function Analytics() {
     const [value, setValue] = React.useState('1');

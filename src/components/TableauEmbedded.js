@@ -1,3 +1,5 @@
+import { Typography } from '@mui/material';
+import { Box } from '@mui/system';
 import React from 'react'
 const { tableau } = window;
 
@@ -19,9 +21,15 @@ function TableauEmbed(props) {
     }, [])
 
     return (
-        <div id="vizContainer">
-            <div></div>
-        </div>
+        <Box id="vizContainer" sx={{
+            padding: "20px"
+        }}>
+            <Typography component="h1" variant="h6" sx={{
+                textAlign: "left"
+            }}>
+                Tableau Dashboard
+            </Typography>
+        </Box>
     );
 }
 
