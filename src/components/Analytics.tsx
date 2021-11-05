@@ -1,10 +1,11 @@
 import React from "react";
 import TableauEmbed from "./TableauEmbedded";
+import { Box } from "@mui/system";
 
 export default function Analytics () {
-    return(
-        <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+    return (
+        <Box>
             <TableauEmbed/>
-        </div>      
-    )
+        </Box>      
+    );
 }

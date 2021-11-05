@@ -28,7 +28,7 @@ ReactDOM.render(
           icon: CloudIcon,
         },
         {
-          text: "Analytics",
+          text: "Worldwide analytics",
           link: "/analytics",
           icon: TimelineIcon,
         },
