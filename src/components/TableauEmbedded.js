@@ -1,11 +1,11 @@
 import React from 'react'
 const { tableau } = window;
 
-function TableauEmbed() {
+function TableauEmbed(props) {
 
     const initViz = () => {
         const containerDiv = document.getElementById("vizContainer");
-        const url = "https://public.tableau.com/views/WorldVisualizations/Worlddashboard"
+        const url = props.url
         const options = {
             hideTabs: true,
             width: 1400,
@@ -20,7 +20,6 @@ function TableauEmbed() {
 
     return (
         <div id="vizContainer">
-            <p>Tableau Dashboard</p>
             <div></div>
         </div>
     );
