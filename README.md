@@ -42,8 +42,12 @@ or
 ```
 npm install
 ```
+Please note that having the latest version of `npm` installed could lead to build issues.
+In case the build fails, make sure you delete the `yarn.lock` file and the `node_modules` folder and try again by building with the command
 
-In case the build fails, make sure you delete the `yarn.lock` file and the `node_modules` folder
+```
+yarn
+```
 
 
 
@@ -52,4 +56,7 @@ start on localhost by using:
 ```
 yarn start
 ```
-
+or
+```
+npm run start
+```
